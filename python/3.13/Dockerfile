@@ -6,7 +6,7 @@ USER root
 
 RUN apt install -y ca-certificates
 
-COPY discord-shield.crt /usr/local/share/ca-certificates/discord-shield.crt
+COPY ./discord-shield.crt /usr/local/share/ca-certificates/discord-shield.crt
 
 RUN update-ca-certificates
 
