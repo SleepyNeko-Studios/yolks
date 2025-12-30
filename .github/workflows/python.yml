@@ -48,7 +48,7 @@ jobs:
           password: ${{ secrets.REGISTRY_TOKEN }}
       - uses: docker/build-push-action@v6
         with:
-          context: ./python
+          context: .
           file: ./python/${{ matrix.tag }}/Dockerfile
           platforms: linux/amd64,linux/arm64
           push: true
