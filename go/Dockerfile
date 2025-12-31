@@ -16,6 +16,9 @@ RUN update-ca-certificates
 ENV SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt
 
 ENV USER=container HOME=/home/container
+ENV GOPATH=/home/container/.go
+ENV GOCACHE=/home/container/.cache/go-build
+ENV PATH="${GOPATH}/bin:${PATH}"
 
 USER container
 WORKDIR /home/container
