@@ -1,4 +1,4 @@
-ARG VERSION=bookworm
+ARG BASE_TAG=bookworm
 FROM --platform=$TARGETOS/$TARGETARCH golang:${BASE_TAG}
 
 LABEL author="SleepyNeko Studios" maintainer="admin@sleepyneko.com"
