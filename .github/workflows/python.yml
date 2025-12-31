@@ -1,4 +1,4 @@
-name: build python
+name: Build Python
 on:
   workflow_dispatch:
   schedule:
