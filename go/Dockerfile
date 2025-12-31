@@ -1,5 +1,5 @@
-ARG VERSION=1.23
-FROM --platform=$TARGETOS/$TARGETARCH golang:${VERSION}-bookworm
+ARG VERSION=bookworm
+FROM --platform=$TARGETOS/$TARGETARCH golang:${BASE_TAG}
 
 LABEL author="SleepyNeko Studios" maintainer="admin@sleepyneko.com"
 

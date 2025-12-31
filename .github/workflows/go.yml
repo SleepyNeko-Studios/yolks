@@ -26,11 +26,13 @@ jobs:
       fail-fast: false
       matrix:
         tag:
+          - "1"
           - "1.21"
           - "1.22"
           - "1.23"
           - "1.24"
           - "1.25"
+          - "latest"
     steps:
       - uses: actions/checkout@v4
         with:
@@ -54,6 +56,15 @@ jobs:
           username: ${{ steps.lower-repo.outputs.repo }}
           password: ${{ secrets.REGISTRY_TOKEN }}
 
+      - name: Determine Base Tag
+        id: base-tag
+        run: |
+          if [[ "${{ matrix.tag }}" == "latest" ]]; then
+            echo "tag=bookworm" >> $GITHUB_OUTPUT
+          else
+            echo "tag=${{ matrix.tag }}-bookworm" >> $GITHUB_OUTPUT
+          fi
+
       - uses: docker/build-push-action@v6
         with:
           context: .
@@ -61,5 +72,5 @@ jobs:
           platforms: linux/amd64,linux/arm64
           push: true
           build-args: |
-            VERSION=${{ matrix.tag }}
+            BASE_TAG=${{ steps.base-tag.outputs.tag }}
           tags: ${{ env.REGISTRY }}/${{ steps.lower-repo.outputs.repo }}/yolks:go_${{ matrix.tag }}
