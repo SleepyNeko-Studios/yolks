@@ -1,4 +1,5 @@
-FROM ghcr.io/parkervcp/yolks:python_3.11
+ARG VERSION=3.7
+FROM ghcr.io/parkervcp/yolks:python_${VERSION}
 
 LABEL author="SleepyNeko Studios" maintainer="admin@sleepyneko.com"
 

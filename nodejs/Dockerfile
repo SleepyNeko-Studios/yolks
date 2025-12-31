@@ -1,4 +1,5 @@
-FROM ghcr.io/parkervcp/yolks:nodejs_21
+ARG VERSION=20
+FROM ghcr.io/parkervcp/yolks:nodejs_${VERSION}
 
 LABEL author="SleepyNeko Studios" maintainer="admin@sleepyneko.com"
 

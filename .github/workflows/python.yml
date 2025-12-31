@@ -48,8 +48,8 @@ jobs:
       - uses: docker/build-push-action@v6
         with:
           context: .
-          file: ./python/${{ matrix.tag }}/Dockerfile
+          file: ./python/Dockerfile
           platforms: linux/amd64,linux/arm64
           push: true
-          tags: |
-            ghcr.io/${{ steps.lower-repo.outputs.repository }}/yolks:python_${{ matrix.tag }}
+          build-args: VERSION=${{ matrix.tag }}
+          tags: ghcr.io/${{ steps.lower-repo.outputs.repository }}/yolks:python_${{ matrix.tag }}

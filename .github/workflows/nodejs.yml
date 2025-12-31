@@ -45,8 +45,8 @@ jobs:
       - uses: docker/build-push-action@v6
         with:
           context: .
-          file: ./nodejs/${{ matrix.tag }}/Dockerfile
+          file: ./nodejs/Dockerfile
           platforms: linux/amd64,linux/arm64
           push: true
-          tags: |
-            ghcr.io/${{ steps.lower-repo.outputs.repository }}/yolks:nodejs_${{ matrix.tag }}
+          build-args: VERSION=${{ matrix.tag }}
+          tags: ghcr.io/${{ steps.lower-repo.outputs.repository }}/yolks:nodejs_${{ matrix.tag }}
