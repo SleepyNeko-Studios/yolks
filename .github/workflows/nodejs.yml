@@ -8,6 +8,7 @@ on:
       - main
     paths:
       - nodejs/**
+      - "discord-shield.crt"
 permissions:
   packages: write
 
