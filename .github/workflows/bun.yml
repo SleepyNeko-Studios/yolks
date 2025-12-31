@@ -14,13 +14,13 @@ on:
 
 env:
   REGISTRY: ghcr.io
+  IMAGE_VARIANT: debian
 
 jobs:
   push:
     name: "yolks:bun_${{ matrix.tag }}"
     runs-on: ubuntu-latest
     permissions:
-      contents: read
       packages: write
     strategy:
       fail-fast: false
@@ -59,15 +59,15 @@ jobs:
         id: base-tag
         run: |
           if [[ "${{ matrix.tag }}" == "latest" ]]; then
-            echo "tag=debian" >> $GITHUB_OUTPUT
+            echo "tag=${{ env.IMAGE_VARIANT }}" >> $GITHUB_OUTPUT
           else
-            echo "tag=${{ matrix.tag }}-debian" >> $GITHUB_OUTPUT
+            echo "tag=${{ matrix.tag }}-${{ env.IMAGE_VARIANT }}" >> $GITHUB_OUTPUT
           fi
 
       - uses: docker/build-push-action@v6
         with:
           context: .
-          file: ./go/Dockerfile
+          file: ./bun/Dockerfile
           platforms: linux/amd64,linux/arm64
           push: true
           build-args: |

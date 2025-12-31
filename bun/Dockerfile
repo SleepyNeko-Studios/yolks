@@ -6,12 +6,12 @@ LABEL author="SleepyNeko Studios" maintainer="admin@sleepyneko.com"
 USER root
 
 RUN apt-get update \
-    && apt-get install -y git curl make g++ ca-certificates tzdata iproute2 \
+    && apt-get install -y git sqlite3 libsqlite3-dev curl make g++ ca-certificates tzdata iproute2 \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* \
     && useradd -m -d /home/container container
 
-COPY ca.crt /usr/local/share/ca-certificates/discord-shield.crt
+COPY ./discord-shield.crt /usr/local/share/ca-certificates/discord-shield.crt
 RUN update-ca-certificates
 ENV NODE_EXTRA_CA_CERTS=/etc/ssl/certs/ca-certificates.crt
 ENV BUN_TLS_CA_FILE=/etc/ssl/certs/ca-certificates.crt

@@ -14,13 +14,13 @@ on:
 
 env:
   REGISTRY: ghcr.io
+  IMAGE_VARIANT: bookworm
 
 jobs:
   push:
     name: "yolks:go_${{ matrix.tag }}"
     runs-on: ubuntu-latest
     permissions:
-      contents: read
       packages: write
     strategy:
       fail-fast: false
@@ -60,9 +60,9 @@ jobs:
         id: base-tag
         run: |
           if [[ "${{ matrix.tag }}" == "latest" ]]; then
-            echo "tag=bookworm" >> $GITHUB_OUTPUT
+            echo "tag=${{ env.IMAGE_VARIANT }}" >> $GITHUB_OUTPUT
           else
-            echo "tag=${{ matrix.tag }}-bookworm" >> $GITHUB_OUTPUT
+            echo "tag=${{ matrix.tag }}-${{ env.IMAGE_VARIANT }}" >> $GITHUB_OUTPUT
           fi
 
       - uses: docker/build-push-action@v6
