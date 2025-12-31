@@ -15,8 +15,7 @@
         "Bun 1": "ghcr.io\/sleepyneko-studios\/yolks:bun_1",
         "Bun 1.3": "ghcr.io\/sleepyneko-studios\/yolks:bun_1.3",
         "Bun 1.2": "ghcr.io\/sleepyneko-studios\/yolks:bun_1.2",
-        "Bun 1.1": "ghcr.io\/sleepyneko-studios\/yolks:bun_1.1",
-        "Bun 1.0": "ghcr.io\/sleepyneko-studios\/yolks:bun_1.0"
+        "Bun 1.1": "ghcr.io\/sleepyneko-studios\/yolks:bun_1.1"
     },
     "file_denylist": [],
     "startup": "if [[ -d .git ]] && [[ {{AUTO_UPDATE}} == \"1\" ]]; then git pull; fi; if [[ ! -z ${NODE_PACKAGES} ]]; then bun install ${NODE_PACKAGES}; fi; if [[ ! -z ${UNNODE_PACKAGES} ]]; then bun remove ${UNNODE_PACKAGES}; fi; if [ -f package.json ]; then bun install; fi; bun run {{SCRIPT}}",
