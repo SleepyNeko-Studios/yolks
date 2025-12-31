@@ -3,23 +3,21 @@ name: Build Golang
 on:
   workflow_dispatch:
   schedule:
-    - cron: "0 0 * * 1" # 每週日自動構建一次
+    - cron: "0 0 * * 1"
   push:
     branches:
       - main
     paths:
       - "go/**"
-      - "discord-shield.crt" # 憑證更新時重跑
+      - "discord-shield.crt"
+      - ".github/workflows/go.yml"
 
 env:
   REGISTRY: ghcr.io
 
 jobs:
-  # ==========================================
-  # Build Go (支援多版本矩陣)
-  # ==========================================
-  build-go:
-    name: "Build Go ${{ matrix.tag }}"
+  push:
+    name: "yolks:go_${{ matrix.tag }}"
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -28,53 +26,40 @@ jobs:
       fail-fast: false
       matrix:
         tag:
-          # - "1.21"
+          - "1.21"
           - "1.22"
           - "1.23"
+          - "1.24"
+          - "1.25"
     steps:
       - uses: actions/checkout@v4
         with:
           token: ${{ secrets.REGISTRY_TOKEN }}
 
-      # 1. 設定 QEMU (為了支援 ARM64)
+      # Setup QEMU for ARM64 Build
       - uses: docker/setup-qemu-action@v3
-        with:
-          image: tonistiigi/binfmt:qemu-v7.0.0-28
 
-      # 2. 設定 Buildx
       - uses: docker/setup-buildx-action@v3
+        with:
+          buildkitd-flags: --debug
 
-      - name: Lowercase Repository Owner Name
-        id: lower-owner
+      - name: Repository to lowercase
+        id: lower-repo
         run: |
-          # ${GITHUB_REPOSITORY_OWNER,,} 是 Bash 的轉小寫語法
-          echo "owner=${GITHUB_REPOSITORY_OWNER,,}" >> $GITHUB_OUTPUT
+          echo "repo=${GITHUB_REPOSITORY_OWNER,,}" >> $GITHUB_OUTPUT
 
-      # 3. 登入 GitHub Container Registry
       - uses: docker/login-action@v3
         with:
           registry: ${{ env.REGISTRY }}
-          username: ${{ steps.lower-owner.outputs.owner }}
+          username: ${{ steps.lower-repo.outputs.repo }}
           password: ${{ secrets.REGISTRY_TOKEN }}
 
-      - name: Lowercase Repository Name
-        id: lower-repo
-        run: |
-          # ${GITHUB_REPOSITORY,,} 是 Bash 的轉小寫語法
-          echo "repo=${GITHUB_REPOSITORY,,}" >> $GITHUB_OUTPUT
-
-      # 4. 構建並推送
-      - uses: docker/build-push-action@v5
+      - uses: docker/build-push-action@v6
         with:
-          # [關鍵修改] Context 設為根目錄 "."，這樣 Dockerfile 才能 COPY ca.crt
           context: .
-          # [關鍵修改] 指定單一 Dockerfile
           file: ./go/Dockerfile
-          # 支援多架構 (Pterodactyl 官方標準)
           platforms: linux/amd64,linux/arm64
           push: true
-          # [關鍵修改] 傳入變數給 Dockerfile 的 ARG
           build-args: |
             VERSION=${{ matrix.tag }}
-          # 自動標籤
-          tags: ${{ env.REGISTRY }}/${{ steps.lower-repo.outputs.repo }}:go_${{ matrix.tag }}
+          tags: ${{ env.REGISTRY }}/${{ steps.lower-repo.outputs.repo }}/yolks:go_${{ matrix.tag }}
