@@ -29,12 +29,13 @@ jobs:
       fail-fast: false
       matrix:
         tag:
-          - "1.21"
+          # - "1.21"
           - "1.22"
           - "1.23"
-          - "latest"
     steps:
       - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.REGISTRY_TOKEN }}
 
       # 1. 設定 QEMU (為了支援 ARM64)
       - uses: docker/setup-qemu-action@v3
@@ -44,15 +45,21 @@ jobs:
       # 2. 設定 Buildx
       - uses: docker/setup-buildx-action@v3
 
+      - name: Lowercase Repository Owner Name
+        id: lower-owner
+        run: |
+          # ${GITHUB_REPOSITORY_OWNER,,} 是 Bash 的轉小寫語法
+          echo "owner=${GITHUB_REPOSITORY_OWNER,,}" >> $GITHUB_OUTPUT
+
       # 3. 登入 GitHub Container Registry
       - uses: docker/login-action@v3
         with:
           registry: ${{ env.REGISTRY }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          username: ${{ steps.lower-owner.outputs.owner }}
+          password: ${{ secrets.REGISTRY_TOKEN }}
 
       - name: Lowercase Repository Name
-        id: meta
+        id: lower-repo
         run: |
           # ${GITHUB_REPOSITORY,,} 是 Bash 的轉小寫語法
           echo "repo=${GITHUB_REPOSITORY,,}" >> $GITHUB_OUTPUT
@@ -71,4 +78,4 @@ jobs:
           build-args: |
             VERSION=${{ matrix.tag }}
           # 自動標籤
-          tags: ${{ env.REGISTRY }}/${{ steps.meta.outputs.repo }}:go_${{ matrix.tag }}
+          tags: ${{ env.REGISTRY }}/${{ steps.lower-repo.outputs.repo }}:go_${{ matrix.tag }}
