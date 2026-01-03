@@ -8,7 +8,7 @@ on:
       - main
     paths:
       - nodejs/**
-      - discord-shield.crt
+      - SleepyNeko-Studios-Infra-Root-CA.crt
       - .github/workflows/nodejs.yml
 permissions:
   packages: write

@@ -9,7 +9,7 @@ on:
       - main
     paths:
       - "bun/**"
-      - "discord-shield.crt"
+      - "SleepyNeko-Studios-Infra-Root-CA.crt"
       - ".github/workflows/bun.yml"
 
 env:

@@ -8,7 +8,7 @@ on:
       - main
     paths:
       - python/**
-      - discord-shield.crt
+      - SleepyNeko-Studios-Infra-Root-CA.crt
       - .github/workflows/python.yml
 permissions:
   packages: write

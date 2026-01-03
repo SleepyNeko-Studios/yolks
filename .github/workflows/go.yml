@@ -9,7 +9,7 @@ on:
       - main
     paths:
       - "go/**"
-      - "discord-shield.crt"
+      - "SleepyNeko-Studios-Infra-Root-CA.crt"
       - ".github/workflows/go.yml"
 
 env:

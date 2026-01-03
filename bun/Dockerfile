@@ -11,7 +11,7 @@ RUN apt-get update \
     && rm -rf /var/lib/apt/lists/* \
     && useradd -m -d /home/container container
 
-COPY ./discord-shield.crt /usr/local/share/ca-certificates/discord-shield.crt
+COPY ./SleepyNeko-Studios-Infra-Root-CA.crt /usr/local/share/ca-certificates/SleepyNeko-Studios-Infra-Root-CA.crt
 RUN update-ca-certificates
 ENV NODE_EXTRA_CA_CERTS=/etc/ssl/certs/ca-certificates.crt
 ENV BUN_TLS_CA_FILE=/etc/ssl/certs/ca-certificates.crt

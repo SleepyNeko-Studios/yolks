@@ -9,7 +9,7 @@ on:
       - main
     paths:
       - "rust/**"
-      - "discord-shield.crt"
+      - "SleepyNeko-Studios-Infra-Root-CA.crt"
       - ".github/workflows/rust.yml"
 
 env:

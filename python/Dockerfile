@@ -6,7 +6,7 @@ LABEL author="SleepyNeko Studios" maintainer="admin@sleepyneko.com"
 USER root
 
 RUN apt install -y ca-certificates
-COPY ./discord-shield.crt /usr/local/share/ca-certificates/discord-shield.crt
+COPY ./SleepyNeko-Studios-Infra-Root-CA.crt /usr/local/share/ca-certificates/SleepyNeko-Studios-Infra-Root-CA.crt
 RUN update-ca-certificates
 
 ENV REQUESTS_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt
