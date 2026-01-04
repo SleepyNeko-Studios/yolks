@@ -7,7 +7,7 @@
     "exported_at": "2025-12-31T12:00:00+00:00",
     "name": "Bun",
     "author": "admin@sleepyneko.com",
-    "description": "A Generic Bun Egg for Pelican & Pterodactyl",
+    "description": "A Generic Bun Egg for Pterodactyl",
     "features": null,
     "docker_images": {
         "Bun Latest": "ghcr.io\/sleepyneko-studios\/yolks:bun_latest",

@@ -7,7 +7,7 @@
     "exported_at": "2025-12-31T12:00:00+00:00",
     "name": "Golang",
     "author": "admin@sleepyneko.com",
-    "description": "A Generic Golang Egg for Pelican & Pterodactyl",
+    "description": "A Generic Golang Egg for Pterodactyl",
     "features": null,
     "docker_images": {
         "Go Latest": "ghcr.io\/sleepyneko-studios\/yolks:go_latest",
