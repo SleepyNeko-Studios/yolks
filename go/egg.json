@@ -23,7 +23,7 @@
     "startup": "if [[ -d .git ]] && [[ \"{{AUTO_UPDATE}}\" == \"1\" ]]; then git pull; fi; go mod tidy; go build -o ${BINARY_NAME} ${PACKAGES}; .\/${BINARY_NAME}",
     "config": {
         "files": "{}",
-        "startup": "{\r\n    \"done\": \"change this part\"\r\n}",
+        "startup": "{\r\n    \"done\": \"go version go\"\r\n}",
         "logs": "{}",
         "stop": "^C"
     },

@@ -10,17 +10,17 @@
     "description": "A Generic Node.js Egg for Pterodactyl",
     "features": null,
     "docker_images": {
-        "Nodejs 20": "ghcr.io\/sleepyneko-studios\/yolks:nodejs_20",
-        "Nodejs 21": "ghcr.io\/sleepyneko-studios\/yolks:nodejs_21",
-        "Nodejs 22": "ghcr.io\/sleepyneko-studios\/yolks:nodejs_22",
+        "Nodejs 24": "ghcr.io\/sleepyneko-studios\/yolks:nodejs_24",
         "Nodejs 23": "ghcr.io\/sleepyneko-studios\/yolks:nodejs_23",
-        "Nodejs 24": "ghcr.io\/sleepyneko-studios\/yolks:nodejs_24"
+        "Nodejs 22": "ghcr.io\/sleepyneko-studios\/yolks:nodejs_22",
+        "Nodejs 21": "ghcr.io\/sleepyneko-studios\/yolks:nodejs_21",
+        "Nodejs 20": "ghcr.io\/sleepyneko-studios\/yolks:nodejs_20"
     },
     "file_denylist": [],
     "startup": "if [[ -d .git ]] && [[ {{AUTO_UPDATE}} == \"1\" ]]; then git pull; fi; if [[ ! -z ${NODE_PACKAGES} ]]; then \/usr\/local\/bin\/npm install ${NODE_PACKAGES}; fi; if [[ ! -z ${UNNODE_PACKAGES} ]]; then \/usr\/local\/bin\/npm uninstall ${UNNODE_PACKAGES}; fi; if [ -f \/home\/container\/package.json ]; then \/usr\/local\/bin\/npm install; fi; if [[ \"${MAIN_FILE}\" == \"*.js\" ]]; then \/usr\/local\/bin\/node \"\/home\/container\/${MAIN_FILE}\" ${NODE_ARGS}; else \/usr\/local\/bin\/ts-node --esm \"\/home\/container\/${MAIN_FILE}\" ${NODE_ARGS}; fi",
     "config": {
         "files": "{}",
-        "startup": "{\r\n    \"done\": [\r\n        \"change this text 1\",\r\n        \"change this text 2\"\r\n    ]\r\n}",
+        "startup": "{\r\n    \"done\": [\r\n        \" packages, removed \",\r\n        \"up to date, audited \",\r\n        \" packages are looking for funding\"\r\n    ]\r\n}",
         "logs": "{}",
         "stop": "^C"
     },
