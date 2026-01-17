@@ -14,7 +14,7 @@ RUN apt-get update \
 COPY ./SleepyNeko-Studios-Infra-Root-CA.crt /usr/local/share/ca-certificates/SleepyNeko-Studios-Infra-Root-CA.crt
 RUN update-ca-certificates
 ENV SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt
-ENV OPENSSL_DIR=/usr/lib/ssl
+ENV SSL_CERT_DIR=/etc/ssl/certs
 
 ENV USER=container HOME=/home/container CARGO_HOME=/home/container/.cargo
 
