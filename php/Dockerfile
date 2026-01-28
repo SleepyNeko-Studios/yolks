@@ -11,6 +11,11 @@ RUN update-ca-certificates
 
 RUN install-php-extensions mysqli gd intl zip opcache imagick
 
+# use copy and move to avoid permission issues with frankenphp binary
+RUN cp /usr/local/bin/frankenphp /tmp/frankenphp \
+    && mv /tmp/frankenphp /usr/local/bin/frankenphp \
+    && chmod +x /usr/local/bin/frankenphp
+
 RUN adduser -D -h /home/container -s /bin/sh container
 ENV USER=container HOME=/home/container
 
