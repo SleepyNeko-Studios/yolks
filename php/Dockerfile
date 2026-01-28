@@ -16,6 +16,10 @@ RUN cp /usr/local/bin/frankenphp /tmp/frankenphp \
     && mv /tmp/frankenphp /usr/local/bin/frankenphp \
     && chmod +x /usr/local/bin/frankenphp
 
+ENV PHP_INI_SCAN_DIR=":/home/container/.php_config"
+ENV XDG_DATA_HOME="/home/container/.local/share"
+ENV XDG_CONFIG_HOME="/home/container/.config"
+
 RUN adduser -D -h /home/container -s /bin/sh container
 ENV USER=container HOME=/home/container
 

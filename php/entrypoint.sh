@@ -12,4 +12,4 @@ MODIFIED_STARTUP=$(echo -e $(echo -e ${STARTUP} | sed -e 's/{{/${/g' -e 's/}}/}/
 echo ":/home/container$ ${MODIFIED_STARTUP}"
 
 # 3. Execute the command
-eval ${MODIFIED_STARTUP}
+eval "exec ${MODIFIED_STARTUP}"
