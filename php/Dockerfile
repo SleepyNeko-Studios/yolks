@@ -5,7 +5,7 @@ LABEL author="SleepyNeko Studios" maintainer="admin@sleepyneko.com"
 
 USER root
 
-RUN apk add -y ca-certificates
+RUN apk update && apk upgrade && apk add --no-cache ca-certificates
 COPY ./SleepyNeko-Studios-Infra-Root-CA.crt /usr/local/share/ca-certificates/SleepyNeko-Studios-Infra-Root-CA.crt
 RUN update-ca-certificates
 
