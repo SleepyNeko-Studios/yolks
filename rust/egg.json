@@ -7,7 +7,7 @@
     "exported_at": "2026-01-04T12:00:00+00:00",
     "name": "Rust",
     "author": "admin@sleepyneko.com",
-    "description": "A Generic Rust with cargo Egg for Pterodactyl",
+    "description": "A Generic Rust Egg for Pterodactyl",
     "features": null,
     "docker_images": {
         "Rust Latest": "ghcr.io\/sleepyneko-studios\/yolks:rust_latest",
