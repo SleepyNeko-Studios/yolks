@@ -1,0 +1,117 @@
+{
+    "_comment": "DO NOT EDIT: FILE GENERATED AUTOMATICALLY BY PTERODACTYL PANEL - PTERODACTYL.IO",
+    "meta": {
+        "version": "PTDL_v2",
+        "update_url": null
+    },
+    "exported_at": "2026-01-28T12:00:00+00:00",
+    "name": "WordPress",
+    "author": "admin@nyanko.host",
+    "description": "A Generic WordPress Egg for Pterodactyl",
+    "features": [],
+    "docker_images": {
+        "PHP Latest": "ghcr.io\/sleepyneko-studios\/yolks:php_8",
+        "PHP 8": "ghcr.io\/sleepyneko-studios\/yolks:php_8",
+        "PHP 8.5": "ghcr.io\/sleepyneko-studios\/yolks:php_8.5",
+        "PHP 8.4": "ghcr.io\/sleepyneko-studios\/yolks:php_8.4",
+        "PHP 8.3": "ghcr.io\/sleepyneko-studios\/yolks:php_8.3",
+        "PHP 8.2": "ghcr.io\/sleepyneko-studios\/yolks:php_8.2"
+    },
+    "file_denylist": [],
+    "startup": "if [ -d .git ] && [ \"${AUTO_UPDATE}\" = \"1\" ]; then git pull; fi; exec frankenphp php-server --listen 0.0.0.0:{{SERVER_PORT}} -r \/home\/container\/",
+    "config": {
+        "files": "{\r\n    \".php_config\/custom.ini\": {\r\n        \"parser\": \"ini\",\r\n        \"find\": {\r\n            \"memory_limit\": \"{{server.build.env.PHP_MEMORY_LIMIT}}\",\r\n            \"upload_max_filesize\": \"{{server.build.env.PHP_UPLOAD_LIMIT}}\",\r\n            \"post_max_size\": \"{{server.build.env.PHP_UPLOAD_LIMIT}}\",\r\n            \"[date.timezone]\": \"{{server.build.env.PHP_TIMEZONE}}\",\r\n            \"max_execution_time\": \"300\",\r\n            \"expose_php\": \"Off\",\r\n            \"variables_order\": \"EGPCS\",\r\n            \"[openssl.cafile]\": \"\/etc\/ssl\/certs\/ca-certificates.crt\",\r\n            \"[curl.cainfo]\": \"\/etc\/ssl\/certs\/ca-certificates.crt\"\r\n        }\r\n    }\r\n}",
+        "startup": "{\r\n    \"done\": [\r\n        \"Caddy serving PHP app on\"\r\n    ]\r\n}",
+        "logs": "{}",
+        "stop": "^C"
+    },
+    "scripts": {
+        "installation": {
+            "script": "#!\/bin\/ash\r\n# WordPRess App Installation Script\r\n#\r\n# Server Files: \/mnt\/server\r\napk add --no-cache git curl jq file unzip\r\n\r\nmkdir -p \/mnt\/server\r\ncd \/mnt\/server\r\n\r\n## add git ending if it's not on the address\r\nif [[ ${GIT_ADDRESS} != *.git ]]; then\r\n    GIT_ADDRESS=${GIT_ADDRESS}.git\r\nfi\r\n\r\nif [ -z \"${USERNAME}\" ] && [ -z \"${ACCESS_TOKEN}\" ]; then\r\n    echo -e \"using anon api call\"\r\nelse\r\n    GIT_ADDRESS=\"https:\/\/${USERNAME}:${ACCESS_TOKEN}@$(echo -e ${GIT_ADDRESS} | cut -d\/ -f3-)\"\r\nfi\r\n\r\n## pull git repo\r\nif [ \"$(ls -A \/mnt\/server)\" ]; then\r\n    echo -e \"\/mnt\/server directory is not empty.\"\r\n    if [ -d .git ]; then\r\n        echo -e \".git directory exists\"\r\n        if [ -f .git\/config ]; then\r\n            echo -e \"loading info from git config\"\r\n            ORIGIN=$(git config --get remote.origin.url)\r\n        else\r\n            echo -e \"files found with no git config\"\r\n            echo -e \"closing out without touching things to not break anything\"\r\n            exit 10\r\n        fi\r\n    fi\r\n\r\n    if [ \"${ORIGIN}\" == \"${GIT_ADDRESS}\" ]; then\r\n        echo \"pulling latest from github\"\r\n        git pull\r\n    fi\r\nelse\r\n    echo -e \"\/mnt\/server is empty.\\ncloning files into repo\"\r\n    if [ -z ${BRANCH} ]; then\r\n        echo -e \"cloning default branch\"\r\n        git clone ${GIT_ADDRESS} .\r\n    else\r\n        echo -e \"cloning ${BRANCH}'\"\r\n        git clone --single-branch --branch ${BRANCH} ${GIT_ADDRESS} .\r\n    fi\r\nfi\r\n\r\n## check wordpress exists\r\nif [ -f \"wp-settings.php\" ] || [ -d \"wp-includes\" ]; then\r\n    echo \"WordPress core files detected. Skipping download.\"\r\nelse\r\n    echo \"Downloading latest WordPress Core...\"\r\n    curl -Lo wordpress.zip https:\/\/wordpress.org\/latest.zip\r\n\r\n    echo \"Unpacking WordPress Core...\"\r\n    unzip -q wordpress.zip\r\n\r\n    echo \"Moving files to root...\"\r\n    cp -rn wordpress\/* .\r\n\r\n    rm -rf wordpress wordpress.zip\r\n    echo \"WordPress Core installed.\"\r\nfi\r\n\r\nexport HOME=\/mnt\/server\r\n\r\necho -e \"install complete\"\r\nexit 0",
+            "container": "alpine:3.19",
+            "entrypoint": "ash"
+        }
+    },
+    "variables": [
+        {
+            "name": "PHP Memory Limit",
+            "description": "The maximum amount of memory a script may consume. Use 'M' for Megabytes or 'G' for Gigabytes (e.g., 512M, 1G).",
+            "env_variable": "PHP_MEMORY_LIMIT",
+            "default_value": "512M",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "required|string|max:10",
+            "field_type": "text"
+        },
+        {
+            "name": "PHP Upload Limit",
+            "description": "The maximum file size allowed for uploads. This setting controls both 'upload_max_filesize' and 'post_max_size' (e.g., 100M).",
+            "env_variable": "PHP_UPLOAD_LIMIT",
+            "default_value": "100M",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "required|string|max:10",
+            "field_type": "text"
+        },
+        {
+            "name": "Timezone",
+            "description": "The timezone identifier for the application (e.g., 'Asia\/Taipei' or 'UTC'). See https:\/\/www.php.net\/timezones for a valid list.",
+            "env_variable": "PHP_TIMEZONE",
+            "default_value": "UTC",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "required|string|max:50",
+            "field_type": "text"
+        },
+        {
+            "name": "Git Auto Update",
+            "description": "If enabled, the server will attempt to run 'git pull' to fetch the latest changes on every startup.",
+            "env_variable": "AUTO_UPDATE",
+            "default_value": "0",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "required|boolean",
+            "field_type": "text"
+        },
+        {
+            "name": "Git Repository URL",
+            "description": "The HTTP\/HTTPS URL of the Git repository to clone (e.g., https:\/\/github.com\/user\/repo).",
+            "env_variable": "GIT_ADDRESS",
+            "default_value": "",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "nullable|string",
+            "field_type": "text"
+        },
+        {
+            "name": "Git Branch",
+            "description": "The specific branch to checkout. Leave empty to use the repository's default branch.",
+            "env_variable": "BRANCH",
+            "default_value": "",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "nullable|string",
+            "field_type": "text"
+        },
+        {
+            "name": "Git Username",
+            "description": "The username required for authentication if the repository is private.",
+            "env_variable": "USERNAME",
+            "default_value": "",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "nullable|string",
+            "field_type": "text"
+        },
+        {
+            "name": "Git Access Token",
+            "description": "The Personal Access Token (PAT) or password for private repository authentication. Using a PAT is recommended for security.",
+            "env_variable": "ACCESS_TOKEN",
+            "default_value": "",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "nullable|string",
+            "field_type": "text"
+        }
+    ]
+}
