@@ -1,15 +1,10 @@
 #!/bin/sh
 
-cd /home/container
+cd /home/container || exit
 
-# Print current Node.js version
-node -v
+export N8N_PORT="$SERVER_PORT"
 
-# 2. Handle the startup command passed from Pterodactyl
-# This line replaces the {{variables}} in the panel with actual environment variables
-MODIFIED_STARTUP=$(echo -e $(echo -e ${STARTUP} | sed -e 's/{{/${/g' -e 's/}}/}/g'))
+echo "n8n: $(n8n --version)"
+echo "node: $(node -v)"
 
-echo ":/home/container$ ${MODIFIED_STARTUP}"
-
-# 3. Execute the command
-eval "exec ${MODIFIED_STARTUP}"
+tini -- /docker-entrypoint.sh
