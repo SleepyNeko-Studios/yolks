@@ -62,10 +62,23 @@ jobs:
           username: ${{ steps.lower-repo.outputs.repo }}
           password: ${{ secrets.REGISTRY_TOKEN }}
 
-      - uses: docker/build-push-action@v6
+      - name: Determine Dockerfile Version
+        id: dockerfile
+        run: |
+          TAG="${{ matrix.tag }}"
+          if [[ $TAG =~ ^1\..* ]] || [[ $TAG == "1" ]]; then
+            echo "file=./n8n/Dockerfile.v1" >> $GITHUB_OUTPUT
+            echo "version_type=Alpine" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "file=./n8n/Dockerfile.v2" >> $GITHUB_OUTPUT
+            echo "version_type=Debian" >> $GITHUB_STEP_SUMMARY
+          fi
+
+      - name: Build and push n8n Image
+        uses: docker/build-push-action@v6
         with:
           context: .
-          file: ./n8n/Dockerfile
+          file: ${{ steps.dockerfile.outputs.file }}
           platforms: linux/amd64,linux/arm64
           push: true
           build-args: |

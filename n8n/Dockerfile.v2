@@ -1,0 +1,32 @@
+ARG VERSION=latest
+
+FROM alpine:latest AS certs
+RUN apk add --no-cache ca-certificates
+
+COPY ./SleepyNeko-Studios-Infra-Root-CA.crt /usr/local/share/ca-certificates/SleepyNeko-Studios-Infra-Root-CA.crt
+RUN update-ca-certificates
+
+# --------------------------------
+
+FROM n8nio/n8n:${VERSION}
+
+USER root
+
+LABEL author="SleepyNeko Studios" maintainer="admin@sleepyneko.com"
+
+RUN adduser -D -h /home/container -s /bin/sh container
+RUN chown -R container:container /home/container
+
+USER root
+
+COPY --from=certs /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
+COPY --from=certs /usr/local/share/ca-certificates/ /usr/local/share/ca-certificates/
+
+ENV NODE_EXTRA_CA_CERTS=/usr/local/share/ca-certificates/SleepyNeko-Studios-Infra-Root-CA.crt
+ENV N8N_USER_FOLDER="/home/container"
+ENV USER=container HOME=/home/container
+
+USER container
+WORKDIR /home/container
+
+ENTRYPOINT ["tini", "--", "/docker-entrypoint.sh"]
