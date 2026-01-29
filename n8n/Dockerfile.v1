@@ -1,4 +1,4 @@
-ARG VERSION=latest
+ARG VERSION=1
 FROM n8nio/n8n:${VERSION}
 
 LABEL author="SleepyNeko Studios" maintainer="admin@sleepyneko.com"
