@@ -1,0 +1,73 @@
+name: Build n8n
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 0 * * *"
+  push:
+    branches:
+      - main
+    paths:
+      - "n8n/**"
+      - "SleepyNeko-Studios-Infra-Root-CA.crt"
+      - ".github/workflows/n8n.yml"
+
+env:
+  REGISTRY: ghcr.io
+
+jobs:
+  push:
+    name: "yolks:n8n_${{ matrix.tag }}"
+    runs-on: ubuntu-latest
+    permissions:
+      packages: write
+    strategy:
+      fail-fast: false
+      matrix:
+        tag:
+          - "1.65.2"
+          - "1.79.4"
+          - "1.81.0"
+          - "1.100.1"
+          - "1.123.12"
+          - "1"
+          - "2.1.5"
+          - "2.2.6"
+          - "2.3.6"
+          - "2.4.7"
+          - "2.5.2"
+          - "2.6.2"
+          - "latest"
+          - "next"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.REGISTRY_TOKEN }}
+
+      # Setup QEMU for ARM64 Build
+      - uses: docker/setup-qemu-action@v3
+
+      - uses: docker/setup-buildx-action@v3
+        with:
+          buildkitd-flags: --debug
+
+      - name: Repository to lowercase
+        id: lower-repo
+        run: |
+          echo "repo=${GITHUB_REPOSITORY_OWNER,,}" >> $GITHUB_OUTPUT
+
+      - uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ steps.lower-repo.outputs.repo }}
+          password: ${{ secrets.REGISTRY_TOKEN }}
+
+      - uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./n8n/Dockerfile
+          platforms: linux/amd64,linux/arm64
+          push: true
+          build-args: |
+            VERSION=${{ matrix.tag }}
+          tags: ${{ env.REGISTRY }}/${{ steps.lower-repo.outputs.repo }}/yolks:n8n_${{ matrix.tag }}
