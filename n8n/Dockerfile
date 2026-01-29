@@ -6,12 +6,12 @@ LABEL author="SleepyNeko Studios" maintainer="admin@sleepyneko.com"
 USER root
 
 RUN if [ -f /etc/alpine-release ]; then \
-        apk add --no-cache ca-certificates git; \
-        && adduser -D -h /home/container -s /bin/sh container \
+        apk add --no-cache ca-certificates git \
+        && adduser -D -h /home/container -s /bin/sh container; \
     else \
         apt update && apt install -y --no-install-recommends ca-certificates git \
-        && rm -rf /var/lib/apt/lists/*; \
-        && useradd -m -d /home/container container \
+        && rm -rf /var/lib/apt/lists/* \
+        && useradd -m -d /home/container container; \
     fi
 
 COPY ./SleepyNeko-Studios-Infra-Root-CA.crt /usr/local/share/ca-certificates/SleepyNeko-Studios-Infra-Root-CA.crt
