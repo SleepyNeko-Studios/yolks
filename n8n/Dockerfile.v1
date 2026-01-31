@@ -13,6 +13,9 @@ ENV NODE_EXTRA_CA_CERTS=/usr/local/share/ca-certificates/SleepyNeko-Studios-Infr
 
 ENV N8N_USER_FOLDER="/home/container/.n8n"
 
+# CVE-2025-68668
+ENV N8N_PYTHON_ENABLED=false
+
 RUN adduser -D -h /home/container -s /bin/sh container
 ENV USER=container HOME=/home/container
 
