@@ -9,11 +9,10 @@ RUN apt install -y ca-certificates
 COPY ./SleepyNeko-Studios-Infra-Root-CA.crt /usr/local/share/ca-certificates/SleepyNeko-Studios-Infra-Root-CA.crt
 RUN update-ca-certificates
 
-RUN apt update && apt install -y software-properties-common
-RUN add-apt-repository ppa:deadsnakes/ppa && apt update
-RUN apt install -y gdb libc6-dbg python3.13-dbg
-
 ENV REQUESTS_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt
 ENV SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt
+
+RUN apt install -y gdb
+ENV DEBUGINFOD_URLS="https://debuginfod.debian.net"
 
 USER container
