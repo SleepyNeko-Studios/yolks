@@ -12,7 +12,7 @@ RUN update-ca-certificates
 ENV REQUESTS_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt
 ENV SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt
 
-RUN apt install -y gdb
+RUN apt install -y gdb libc6-dbg
 ENV DEBUGINFOD_URLS="https://debuginfod.debian.net"
 
 USER container
