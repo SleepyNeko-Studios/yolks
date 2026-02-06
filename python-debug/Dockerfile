@@ -5,11 +5,11 @@ LABEL author="SleepyNeko Studios" maintainer="admin@sleepyneko.com"
 
 USER root
 
-RUN apt update
 RUN apt install -y ca-certificates
 COPY ./SleepyNeko-Studios-Infra-Root-CA.crt /usr/local/share/ca-certificates/SleepyNeko-Studios-Infra-Root-CA.crt
 RUN update-ca-certificates
 
+RUN add-apt-repository ppa:deadsnakes/ppa && apt update
 RUN apt install -y gdb libc6-dbg python3.13-dbg
 
 ENV REQUESTS_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt
