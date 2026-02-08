@@ -13,5 +13,5 @@ ENV NODE_EXTRA_CA_CERTS=/usr/local/share/ca-certificates/SleepyNeko-Studios-Infr
 USER container
 WORKDIR /home/container
 
-COPY --chown=container:container ./entrypoint.sh /entrypoint.sh
+COPY --chown=container:container ./uptime-kuma/entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
