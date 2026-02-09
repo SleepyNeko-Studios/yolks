@@ -7,7 +7,7 @@
     "exported_at": "2026-01-28T12:00:00+00:00",
     "name": "WordPress",
     "author": "admin@nyanko.host",
-    "description": "A Generic WordPress Egg for Pterodactyl",
+    "description": "A WordPress Application Egg for Pterodactyl",
     "features": [],
     "docker_images": {
         "PHP Latest": "ghcr.io\/sleepyneko-studios\/yolks:php_8",
