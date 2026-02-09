@@ -1,0 +1,112 @@
+{
+    "_comment": "DO NOT EDIT: FILE GENERATED AUTOMATICALLY BY PTERODACTYL PANEL - PTERODACTYL.IO",
+    "meta": {
+        "version": "PTDL_v2",
+        "update_url": null
+    },
+    "exported_at": "2026-02-09T00:00:00+00:00",
+    "name": "N8N",
+    "author": "admin@nyanko.host",
+    "description": "A N8N Application Egg for Pterodactyl",
+    "features": [],
+    "docker_images": {
+        "N8N Latest": "ghcr.io\/sleepyneko-studios\/yolks:n8n_latest",
+        "N8N Next(Beta)": "ghcr.io\/sleepyneko-studios\/yolks:n8n_next",
+        "N8N 2.6.2": "ghcr.io\/sleepyneko-studios\/yolks:n8n_2.6.2",
+        "N8N 2.5.2": "ghcr.io\/sleepyneko-studios\/yolks:n8n_2.5.2",
+        "N8N 2.4.8": "ghcr.io\/sleepyneko-studios\/yolks:n8n_2.4.8",
+        "N8N 2.3.6": "ghcr.io\/sleepyneko-studios\/yolks:n8n_2.3.6",
+        "N8N 2.2.6": "ghcr.io\/sleepyneko-studios\/yolks:n8n_2.2.6",
+        "N8N 2.1.5": "ghcr.io\/sleepyneko-studios\/yolks:n8n_2.1.5",
+        "N8N 1": "ghcr.io\/sleepyneko-studios\/yolks:n8n_1",
+        "N8N 1.123.12": "ghcr.io\/sleepyneko-studios\/yolks:n8n_1.123.12",
+        "N8N 1.121.3": "ghcr.io\/sleepyneko-studios\/yolks:n8n_1.121.3"
+    },
+    "file_denylist": [],
+    "startup": "--",
+    "config": {
+        "files": "{}",
+        "startup": "{\r\n    \"done\": [\r\n        \"n8n ready on \"\r\n    ]\r\n}",
+        "logs": "{}",
+        "stop": "^C"
+    },
+    "scripts": {
+        "installation": {
+            "script": null,
+            "container": "alpine:3.4",
+            "entrypoint": "ash"
+        }
+    },
+    "variables": [
+        {
+            "name": "Webhook URL",
+            "description": "",
+            "env_variable": "WEBHOOK_URL",
+            "default_value": "",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "nullable|string",
+            "field_type": "text"
+        },
+        {
+            "name": "Encryption Key",
+            "description": "",
+            "env_variable": "N8N_ENCRYPTION_KEY",
+            "default_value": "",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "nullable|string",
+            "field_type": "text"
+        },
+        {
+            "name": "Timezone",
+            "description": "",
+            "env_variable": "GENERIC_TIMEZONE",
+            "default_value": "UTC",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "required|string|max:20",
+            "field_type": "text"
+        },
+        {
+            "name": "Auto Prune Data",
+            "description": "",
+            "env_variable": "EXECUTIONS_DATA_PRUNE",
+            "default_value": "1",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "required|boolean",
+            "field_type": "text"
+        },
+        {
+            "name": "Max Data Age (Hours)",
+            "description": "",
+            "env_variable": "EXECUTIONS_DATA_MAX_AGE",
+            "default_value": "168",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "required|integer",
+            "field_type": "text"
+        },
+        {
+            "name": "Auto Prune Database",
+            "description": "",
+            "env_variable": "DB_SQLITE_VACUUM_ON_STARTUP",
+            "default_value": "1",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "required|boolean",
+            "field_type": "text"
+        },
+        {
+            "name": "N8N_SECURE_COOKIE",
+            "description": "",
+            "env_variable": "N8N_SECURE_COOKIE",
+            "default_value": "",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "nullable|string|max:20",
+            "field_type": "text"
+        }
+    ]
+}
