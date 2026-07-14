@@ -1,0 +1,137 @@
+{
+  "_comment": "DO NOT EDIT: FILE GENERATED AUTOMATICALLY BY PTERODACTYL PANEL - PTERODACTYL.IO",
+  "meta": {
+    "version": "PTDL_v2",
+    "update_url": null
+  },
+  "exported_at": "2026-07-14T12:00:00+00:00",
+  "name": "Java",
+  "author": "admin@sleepyneko.com",
+  "description": "A Generic Java Egg for Pterodactyl. Supports running a pre-built JAR directly or cloning a Git repo and building it with Maven or Gradle before launch.",
+  "features": null,
+  "docker_images": {
+    "Java Latest": "ghcr.io\/sleepyneko-studios\/yolks:java_latest",
+    "Java 25": "ghcr.io\/sleepyneko-studios\/yolks:java_25",
+    "Java 21": "ghcr.io\/sleepyneko-studios\/yolks:java_21",
+    "Java 17": "ghcr.io\/sleepyneko-studios\/yolks:java_17",
+    "Java 11": "ghcr.io\/sleepyneko-studios\/yolks:java_11",
+    "Java 8": "ghcr.io\/sleepyneko-studios\/yolks:java_8"
+  },
+  "file_denylist": [],
+  "startup": "if [[ -d .git ]] && [[ \"{{AUTO_UPDATE}}\" == \"1\" ]]; then git pull; fi; if [[ \"{{BUILD_TOOL}}\" == \"maven\" ]]; then if [ -x ./mvnw ]; then ./mvnw -B -DskipTests package; else mvn -B -DskipTests package; fi; elif [[ \"{{BUILD_TOOL}}\" == \"gradle\" ]]; then if [ -x ./gradlew ]; then ./gradlew build -x test; else gradle build -x test; fi; fi; java {{JAVA_ARGS}} -jar {{JAR_FILE}} {{APP_ARGS}}",
+  "config": {
+    "files": "{}",
+    "startup": "{\r\n    \"done\": \"java version\"\r\n}",
+    "logs": "{}",
+    "stop": "^C"
+  },
+  "scripts": {
+    "installation": {
+      "script": "#!\/bin\/bash\r\n# Java generic package\r\n\r\napt update\r\napt install -y git curl jq maven gradle unzip\r\n\r\nmkdir -p \/mnt\/server\r\ncd \/mnt\/server\r\n\r\nif [ \"${USER_UPLOAD}\" == \"true\" ] || [ \"${USER_UPLOAD}\" == \"1\" ]; then\r\n    echo -e \"assuming user knows what they are doing have a good day.\"\r\n    exit 0\r\nfi\r\n\r\nif [ -z \"${GIT_ADDRESS}\" ]; then\r\n    echo -e \"no git repo address given, assuming a jar will be uploaded manually\"\r\n    exit 0\r\nfi\r\n\r\n## add git ending if it's not on the address\r\nif [[ ${GIT_ADDRESS} != *.git ]]; then\r\n    GIT_ADDRESS=${GIT_ADDRESS}.git\r\nfi\r\n\r\nif [ -z \"${USERNAME}\" ] && [ -z \"${ACCESS_TOKEN}\" ]; then\r\n    echo -e \"using anon api call\"\r\nelse\r\n    GIT_ADDRESS=\"https:\/\/${USERNAME}:${ACCESS_TOKEN}@$(echo -e ${GIT_ADDRESS} | cut -d\/ -f3-)\"\r\nfi\r\n\r\n## pull git java repo\r\nif [ \"$(ls -A \/mnt\/server)\" ]; then\r\n    echo -e \"\/mnt\/server directory is not empty.\"\r\n    if [ -d .git ]; then\r\n        echo -e \".git directory exists\"\r\n        if [ -f .git\/config ]; then\r\n            echo -e \"loading info from git config\"\r\n            ORIGIN=$(git config --get remote.origin.url)\r\n        else\r\n            echo -e \"files found with no git config\"\r\n            echo -e \"closing out without touching things to not break anything\"\r\n            exit 10\r\n        fi\r\n    fi\r\n\r\n    if [ \"${ORIGIN}\" == \"${GIT_ADDRESS}\" ]; then\r\n        echo \"pulling latest from github\"\r\n        git pull\r\n    fi\r\nelse\r\n    echo -e \"\/mnt\/server is empty.\\ncloning files into repo\"\r\n    if [ -z ${BRANCH} ]; then\r\n        echo -e \"cloning default branch\"\r\n        git clone ${GIT_ADDRESS} .\r\n    else\r\n        echo -e \"cloning ${BRANCH}'\"\r\n        git clone --single-branch --branch ${BRANCH} ${GIT_ADDRESS} .\r\n    fi\r\n\r\nfi\r\n\r\nif [ \"${BUILD_TOOL}\" == \"maven\" ] && [ -f pom.xml ]; then\r\n    echo -e \"building with maven\"\r\n    if [ -x .\/mvnw ]; then chmod +x .\/mvnw && .\/mvnw -B -DskipTests package; else mvn -B -DskipTests package; fi\r\nelif [ \"${BUILD_TOOL}\" == \"gradle\" ] && ([ -f build.gradle ] || [ -f build.gradle.kts ]); then\r\n    echo -e \"building with gradle\"\r\n    if [ -x .\/gradlew ]; then chmod +x .\/gradlew && .\/gradlew build -x test; else gradle build -x test; fi\r\nfi\r\n\r\nexport HOME=\/mnt\/server\r\n\r\necho -e \"install complete\"\r\nexit 0",
+      "container": "eclipse-temurin:21-jdk-jammy",
+      "entrypoint": "bash"
+    }
+  },
+  "variables": [
+    {
+      "name": "JAR File",
+      "description": "The JAR file to execute.\r\n\r\nIf using Maven\/Gradle, this should be the path to the built jar (e.g. target\/app.jar or build\/libs\/app.jar).",
+      "env_variable": "JAR_FILE",
+      "default_value": "server.jar",
+      "user_viewable": true,
+      "user_editable": true,
+      "rules": "required|string",
+      "field_type": "text"
+    },
+    {
+      "name": "Build Tool",
+      "description": "Whether to build the project before launch, and with which tool.\r\n\r\nnone = run the JAR as-is (default, for uploaded jars)\r\nmaven = run mvn (or .\/mvnw) package before launch\r\ngradle = run gradle (or .\/gradlew) build before launch",
+      "env_variable": "BUILD_TOOL",
+      "default_value": "none",
+      "user_viewable": true,
+      "user_editable": true,
+      "rules": "required|string|in:none,maven,gradle",
+      "field_type": "text"
+    },
+    {
+      "name": "Java Arguments",
+      "description": "Extra arguments passed to the java binary before -jar, e.g. -Xms128M -Xmx1024M",
+      "env_variable": "JAVA_ARGS",
+      "default_value": "-Xms128M -Xmx1024M",
+      "user_viewable": true,
+      "user_editable": true,
+      "rules": "nullable|string",
+      "field_type": "text"
+    },
+    {
+      "name": "Application Arguments",
+      "description": "Extra arguments passed to the application after the jar file.",
+      "env_variable": "APP_ARGS",
+      "default_value": "",
+      "user_viewable": true,
+      "user_editable": true,
+      "rules": "nullable|string",
+      "field_type": "text"
+    },
+    {
+      "name": "Git Repo Address",
+      "description": "Git repo to clone. Leave blank if you plan to upload a pre-built JAR instead.\r\n\r\nI.E. https:\/\/github.com\/parkervcp\/repo_name",
+      "env_variable": "GIT_ADDRESS",
+      "default_value": "",
+      "user_viewable": true,
+      "user_editable": true,
+      "rules": "nullable|string",
+      "field_type": "text"
+    },
+    {
+      "name": "Git Branch",
+      "description": "What branch to pull from github.\r\n\r\nDefault is blank to pull the repo default branch",
+      "env_variable": "BRANCH",
+      "default_value": "",
+      "user_viewable": true,
+      "user_editable": true,
+      "rules": "nullable|string",
+      "field_type": "text"
+    },
+    {
+      "name": "Auto Update",
+      "description": "Pull the latest files on startup when using a GitHub repo.",
+      "env_variable": "AUTO_UPDATE",
+      "default_value": "0",
+      "user_viewable": true,
+      "user_editable": true,
+      "rules": "required|boolean",
+      "field_type": "text"
+    },
+    {
+      "name": "User Uploaded Files",
+      "description": "Skip all the install/git stuff if you are letting a user upload files (e.g. a pre-built jar).\r\n\r\n0 = false (default)\r\n1 = true",
+      "env_variable": "USER_UPLOAD",
+      "default_value": "0",
+      "user_viewable": true,
+      "user_editable": true,
+      "rules": "required|boolean",
+      "field_type": "text"
+    },
+    {
+      "name": "Git Username",
+      "description": "Username to auth with git.",
+      "env_variable": "USERNAME",
+      "default_value": "",
+      "user_viewable": true,
+      "user_editable": true,
+      "rules": "nullable|string",
+      "field_type": "text"
+    },
+    {
+      "name": "Git Access Token",
+      "description": "Password to use with git.\r\n\r\nIt's best practice to use a Personal Access Token.\r\nhttps:\/\/github.com\/settings\/tokens\r\nhttps:\/\/gitlab.com\/-\/profile\/personal_access_tokens",
+      "env_variable": "ACCESS_TOKEN",
+      "default_value": "",
+      "user_viewable": true,
+      "user_editable": true,
+      "rules": "nullable|string",
+      "field_type": "text"
+    }
+  ]
+}
