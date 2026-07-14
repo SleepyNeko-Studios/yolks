@@ -21,7 +21,8 @@ RUN update-ca-certificates
 RUN keytool -importcert -noprompt \
     -alias sleepyneko-studios-infra-root-ca \
     -file /usr/local/share/ca-certificates/SleepyNeko-Studios-Infra-Root-CA.crt \
-    -cacerts -storepass changeit
+    -keystore "${JAVA_HOME}/lib/security/cacerts" \
+    -storepass changeit
 
 ENV USER=container HOME=/home/container
 
