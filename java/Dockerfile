@@ -14,6 +14,15 @@ RUN apt-get update \
 COPY ./SleepyNeko-Studios-Infra-Root-CA.crt /usr/local/share/ca-certificates/SleepyNeko-Studios-Infra-Root-CA.crt
 RUN update-ca-certificates
 
+# Java doesn't read the system CA bundle (SSL_CERT_FILE etc.) like the other
+# egg runtimes do, it has its own cacerts truststore, so the custom root CA
+# has to be imported into it separately or HTTPS calls from apps fail with
+# "PKIX path building failed".
+RUN keytool -importcert -noprompt \
+    -alias sleepyneko-studios-infra-root-ca \
+    -file /usr/local/share/ca-certificates/SleepyNeko-Studios-Infra-Root-CA.crt \
+    -cacerts -storepass changeit
+
 ENV USER=container HOME=/home/container
 
 USER container
