@@ -15,11 +15,10 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_VARIANT: jdk-jammy
 
 jobs:
   push:
-    name: 'yolks:java_${{ matrix.tag }}'
+    name: 'yolks:java_${{ matrix.tag }}-${{ matrix.variant }}'
     runs-on: ubuntu-latest
     permissions:
       packages: write
@@ -33,6 +32,9 @@ jobs:
           - '21'
           - '25'
           - 'latest'
+        variant:
+          - jammy
+          - noble
     steps:
       - uses: actions/checkout@v6
         with:
@@ -59,10 +61,19 @@ jobs:
       - name: Determine Base Tag
         id: base-tag
         run: |
-          if [[ "${{ matrix.tag }}" == "latest" ]]; then
-            echo "tag=25-${{ env.IMAGE_VARIANT }}" >> $GITHUB_OUTPUT
+          JDK_VERSION="${{ matrix.tag }}"
+          if [[ "$JDK_VERSION" == "latest" ]]; then
+            JDK_VERSION="25"
+          fi
+          echo "tag=${JDK_VERSION}-jdk-${{ matrix.variant }}" >> $GITHUB_OUTPUT
+
+      - name: Determine Image Tag
+        id: image-tag
+        run: |
+          if [[ "${{ matrix.variant }}" == "jammy" ]]; then
+            echo "tag=java_${{ matrix.tag }}" >> $GITHUB_OUTPUT
           else
-            echo "tag=${{ matrix.tag }}-${{ env.IMAGE_VARIANT }}" >> $GITHUB_OUTPUT
+            echo "tag=java_${{ matrix.tag }}-${{ matrix.variant }}" >> $GITHUB_OUTPUT
           fi
 
       - uses: docker/build-push-action@v7
@@ -73,4 +84,4 @@ jobs:
           push: true
           build-args: |
             BASE_TAG=${{ steps.base-tag.outputs.tag }}
-          tags: ${{ env.REGISTRY }}/${{ steps.lower-repo.outputs.repo }}/yolks:java_${{ matrix.tag }}
+          tags: ${{ env.REGISTRY }}/${{ steps.lower-repo.outputs.repo }}/yolks:${{ steps.image-tag.outputs.tag }}

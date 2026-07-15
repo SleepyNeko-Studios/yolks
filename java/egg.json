@@ -7,7 +7,7 @@
   "exported_at": "2026-07-14T12:00:00+00:00",
   "name": "Java",
   "author": "admin@sleepyneko.com",
-  "description": "A Generic Java Egg for Pterodactyl. Supports running a pre-built JAR directly or cloning a Git repo and building it with Maven or Gradle before launch.",
+  "description": "A Generic Java Egg for Pterodactyl. Supports running a pre-built JAR directly or cloning a Git repo and building it with Maven or Gradle before launch.\r\n\r\nBoth Ubuntu jammy and Noble (newer glibc) image variants are available; pick whichever your app requires.",
   "features": null,
   "docker_images": {
     "Java Latest": "ghcr.io\/sleepyneko-studios\/yolks:java_latest",
@@ -15,7 +15,13 @@
     "Java 21": "ghcr.io\/sleepyneko-studios\/yolks:java_21",
     "Java 17": "ghcr.io\/sleepyneko-studios\/yolks:java_17",
     "Java 11": "ghcr.io\/sleepyneko-studios\/yolks:java_11",
-    "Java 8": "ghcr.io\/sleepyneko-studios\/yolks:java_8"
+    "Java 8": "ghcr.io\/sleepyneko-studios\/yolks:java_8",
+    "Java Latest (Noble)": "ghcr.io\/sleepyneko-studios\/yolks:java_latest-noble",
+    "Java 25 (Noble)": "ghcr.io\/sleepyneko-studios\/yolks:java_25-noble",
+    "Java 21 (Noble)": "ghcr.io\/sleepyneko-studios\/yolks:java_21-noble",
+    "Java 17 (Noble)": "ghcr.io\/sleepyneko-studios\/yolks:java_17-noble",
+    "Java 11 (Noble)": "ghcr.io\/sleepyneko-studios\/yolks:java_11-noble",
+    "Java 8 (Noble)": "ghcr.io\/sleepyneko-studios\/yolks:java_8-noble"
   },
   "file_denylist": [],
   "startup": "if [[ -d .git ]] && [[ \"{{AUTO_UPDATE}}\" == \"1\" ]]; then git pull; fi; if [[ \"{{BUILD_TOOL}}\" == \"maven\" ]]; then if [ -x ./mvnw ]; then ./mvnw -B -DskipTests package; else mvn -B -DskipTests package; fi; elif [[ \"{{BUILD_TOOL}}\" == \"gradle\" ]]; then if [ -x ./gradlew ]; then ./gradlew build -x test; else gradle build -x test; fi; fi; java {{JAVA_ARGS}} -jar {{JAR_FILE}} {{APP_ARGS}}",
@@ -37,7 +43,6 @@
       "name": "JAR File",
       "description": "The JAR file to execute.\r\n\r\nIf using Maven\/Gradle, this should be the path to the built jar (e.g. target\/app.jar or build\/libs\/app.jar).",
       "env_variable": "JAR_FILE",
-      "default_value": "server.jar",
       "default_value": "app.jar",
       "user_viewable": true,
       "user_editable": true,
