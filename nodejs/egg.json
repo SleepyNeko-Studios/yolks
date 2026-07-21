@@ -4,9 +4,11 @@
         "version": "PTDL_v2",
         "update_url": null
     },
+    "exported_at": "2025-12-30T12:00:00+00:00",
     "name": "Node.js",
     "author": "admin@sleepyneko.com",
     "description": "A Generic Node.js Egg for Pterodactyl",
+    "features": null,
     "docker_images": {
         "Nodejs 26": "ghcr.io\/sleepyneko-studios\/yolks:nodejs_26",
         "Nodejs 25": "ghcr.io\/sleepyneko-studios\/yolks:nodejs_25",
